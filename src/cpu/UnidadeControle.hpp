@@ -14,7 +14,7 @@ private:
     ULA ula;
 
 public:
-    // Função para executar uma instrução e modificar a RAM se necessário
+
     void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
         switch(instr.op) {
             case ADD: {
@@ -42,16 +42,14 @@ public:
                 break;
             }
             case LOAD: {
-                // Carregar da RAM para um registrador
-                int valor = ram.read(regs.get(instr.Register_1));  // Endereço está em Register_1
+                int valor = ram.read(regs.get(instr.Register_1)); 
                 regs.set(instr.Destiny_Register, valor);
                 cout << "LOAD R" << instr.Destiny_Register << " = RAM[" << regs.get(instr.Register_1) << "] -> " << regs.get(instr.Destiny_Register) << endl;
                 break;
             }
             case STORE: {
-                // Armazenar de um registrador para a RAM
                 int valor = regs.get(instr.Destiny_Register);
-                ram.write(regs.get(instr.Register_1), valor);  // Endereço está em Register_1
+                ram.write(regs.get(instr.Register_1), valor); 
                 cout << "STORE RAM[" << regs.get(instr.Register_1) << "] = R" << instr.Destiny_Register << " -> " << valor << endl;
                 break;
             }
