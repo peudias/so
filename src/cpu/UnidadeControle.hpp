@@ -5,6 +5,7 @@
 #include "Instruction.hpp"
 #include "Registers.hpp"
 #include "ULA.hpp"
+#include "RAM.hpp"
 
 using namespace std;
 
@@ -13,7 +14,8 @@ private:
     ULA ula;
 
 public:
-    void executarInstrucao(const Instruction& instr, Registers& regs, int& PC) {
+    // Função para executar uma instrução e modificar a RAM se necessário
+    void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
         switch(instr.op) {
             case ADD: {
                 int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), ADD);
@@ -37,6 +39,32 @@ public:
                 int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), OR);
                 regs.set(instr.Destiny_Register, resultado);
                 cout << "OR R" << instr.Destiny_Register << " = R" << instr.Register_1 << " | R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                break;
+            }
+            case LOAD: {
+                // Carregar da RAM para um registrador
+                int valor = ram.read(regs.get(instr.Register_1));  // Endereço está em Register_1
+                regs.set(instr.Destiny_Register, valor);
+                cout << "LOAD R" << instr.Destiny_Register << " = RAM[" << regs.get(instr.Register_1) << "] -> " << regs.get(instr.Destiny_Register) << endl;
+                break;
+            }
+            case STORE: {
+                // Armazenar de um registrador para a RAM
+                int valor = regs.get(instr.Destiny_Register);
+                ram.write(regs.get(instr.Register_1), valor);  // Endereço está em Register_1
+                cout << "STORE RAM[" << regs.get(instr.Register_1) << "] = R" << instr.Destiny_Register << " -> " << valor << endl;
+                break;
+            }
+            case MULT: {
+                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), MULT);
+                regs.set(instr.Destiny_Register, resultado);
+                cout << "MULT R" << instr.Destiny_Register << " = R" << instr.Register_1 << " * R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                break;
+            }
+            case DIV: {
+                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), MULT);
+                regs.set(instr.Destiny_Register, resultado);
+                cout << "DIV R" << instr.Destiny_Register << " = R" << instr.Register_1 << " / R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
                 break;
             }
             default:

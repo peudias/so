@@ -8,6 +8,8 @@ enum Opcode {
     STORE = 3,
     AND = 4,
     OR = 5, 
+    MULT = 6,
+    DIV = 7,
 };
 
 #endif

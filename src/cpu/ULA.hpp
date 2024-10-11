@@ -18,6 +18,10 @@ public:
                 return operador_1 & operador_2;
             case OR:
                 return operador_1 | operador_2;
+            case MULT:
+                return operador_1 * operador_2;
+            case DIV:
+                return operador_1 / operador_2;
             default:
                 cout << "Operacao invalida!" << endl;
                 return 0;
