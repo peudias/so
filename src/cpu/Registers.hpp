@@ -1,6 +1,6 @@
 #ifndef REGISTERS_HPP
 #define REGISTERS_HPP
-#define NUM_REGISTRADORES 32
+#define NUM_REGISTRADORES 8
 
 #include <iostream>
 #include <vector>
@@ -31,8 +31,9 @@ public:
     }
 
     void display() const {
+        cout << endl << "Registradores: " << endl;
         for (size_t i = 0; i < registradores.size(); ++i) {
-            cout << "R" << i << " = " << registradores[i] << endl;
+            cout << "R[" << i << "] = " << registradores[i] << endl;
         } 
     }  
 };

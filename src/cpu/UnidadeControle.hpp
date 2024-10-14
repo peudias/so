@@ -13,7 +13,8 @@ private:
     ULA ula;
 
 public:
-    void executarInstrucao(const Instruction& instr, Registers& regs, int& PC) {
+    //void executarInstrucao(const Instruction& instr, Registers& regs, int& PC) {
+    void executarInstrucao(const Instruction& instr, Registers& regs) {
         switch(instr.op) {
             case ADD: {
                 int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), ADD);
@@ -42,7 +43,7 @@ public:
             default:
                 cerr << "Opcode desconhecido: " << instr.op << endl;
         }
-        PC += 4;
+        // PC += 4;
     }
 };
 
