@@ -15,7 +15,8 @@ private:
 
 public:
 
-    void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
+    // void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
+    void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram) {
         switch(instr.op) {
             case ADD: {
                 int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), ADD);

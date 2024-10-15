@@ -25,24 +25,28 @@ int main() {
     regs.set(3, 5);  // R3 = 5
     regs.set(4, 7);  // R4 = 7
 
-    vector<Instruction> memoria = {
-        Instruction(ADD, 1, 2, 3), // R1 -> R2 + R3 = 10 + 5 = 15
-        Instruction(SUB, 5, 1, 3), // R5 -> R1 - R3 = 15 - 5 = 10
-        Instruction(AND, 6, 1, 4), // R6 -> R1 & R4 = 15 & 7 = 1111 & 111 => (0111 === 7)
-        Instruction(OR, 7, 2, 4)   // R7 -> R2 | R4 = 10 | 7 = 1010 | 111 => (1111 === 15)
-    };
-
-    Instruction instr1(ADD, 1, 2, 3);
-    uc.executarInstrucao(instr1, regs, ram, PC);
+    // Instruction instr1(ADD, 1, 2, 3);
+    // uc.executarInstrucao(instr1, regs, ram, PC);
     
-    Instruction instr2(SUB, 4, 1, 3);
-    uc.executarInstrucao(instr2, regs, ram, PC);
+    // Instruction instr2(SUB, 4, 1, 3);
+    // uc.executarInstrucao(instr2, regs, ram, PC);
 
-    Instruction storeInstr(STORE, 3, 2, 0);
-    uc.executarInstrucao(storeInstr, regs, ram, PC);
+    // Instruction storeInstr(STORE, 3, 2, 0);
+    // uc.executarInstrucao(storeInstr, regs, ram, PC);
 
-    Instruction loadInstr(LOAD, 0, 2, 0);  
-    uc.executarInstrucao(loadInstr, regs, ram, PC);
+    // Instruction loadInstr(LOAD, 0, 2, 0);  
+    // uc.executarInstrucao(loadInstr, regs, ram, PC);
+
+    vector<Instruction> memoria = {
+        Instruction(ADD, 1, 2, 3),   // R1 -> R2 + R3 = 10 + 5 = 15
+        Instruction(SUB, 5, 1, 3),   // R5 -> R1 - R3 = 15 - 5 = 10
+        Instruction(AND, 6, 1, 4),   // R6 -> R1 & R4 = 15 & 7 = 1111 & 111 => (0111 === 7)
+        Instruction(OR, 7, 2, 4),    // R7 -> R2 | R4 = 10 | 7 = 1010 | 111 => (1111 === 15)
+        Instruction(ADD, 1, 2, 3),   // R1 -> R2 + R3
+        Instruction(SUB, 4, 1, 3),   // R4 -> R1 - R3
+        Instruction(STORE, 3, 2, 0), // R3 -> R2 store R0
+        Instruction(LOAD, 0, 2, 0)   // R0 -> R2 load R0
+    };
 
     while (PC < memoria.size() * 4){
         Instruction instr = InstructionFetch(memoria, PC);
@@ -53,6 +57,8 @@ int main() {
               << ", Destino: R" << decodedInstr.destiny
               << ", Operando 1: " << decodedInstr.value1
               << ", Operando 2: " << decodedInstr.value2 << endl;
+
+        uc.executarInstrucao(instr, regs, ram);
 
         // Executa estágio EX do pipeline e escreve o resultado no registrador
         Execute(decodedInstr, resultado);
