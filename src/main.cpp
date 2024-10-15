@@ -5,6 +5,7 @@
 #include "cpu/UnidadeControle.hpp"
 #include "pipeline/InstructionFetch.hpp"
 #include "pipeline/InstructionDecode.hpp"
+#include "pipeline/Execute.hpp"
 
 #include <vector>
 #include <iostream>
@@ -15,6 +16,7 @@ int main() {
     Registers regs;
     UnidadeControle uc;
     int PC = 0;
+    int resultado = 0;
 
     regs.set(2, 10); // R2 = 10
     regs.set(3, 5);  // R3 = 5
@@ -27,7 +29,7 @@ int main() {
         Instruction(OR, 7, 2, 4)   // R7 -> R2 | R4 = 10 | 7 = 1010 | 111 => (1111 === 15)
     };
     
-    while (PC < memoria.size() * 4){
+   while (PC < memoria.size() * 4){
         Instruction instr = InstructionFetch(memoria, PC);
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
 
@@ -37,7 +39,9 @@ int main() {
               << ", Operando 1: " << decodedInstr.value1
               << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        uc.executarInstrucao(instr, regs);
+        // Executa estágio EX do pipeline e escreve o resultado no registrador
+        Execute(decodedInstr, resultado);
+        regs.set(decodedInstr.destiny, resultado);
     }
 
     regs.display();
@@ -46,16 +50,3 @@ int main() {
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
