@@ -3,7 +3,7 @@
 #include "cpu/Registers.hpp"
 #include "cpu/ULA.hpp"
 #include "cpu/UnidadeControle.hpp"
-#include "cpu/RAM.hpp"
+#include "mainMemory/RAM.hpp"
 #include "pipeline/InstructionFetch.hpp"
 #include "pipeline/InstructionDecode.hpp"
 #include "pipeline/Execute.hpp"

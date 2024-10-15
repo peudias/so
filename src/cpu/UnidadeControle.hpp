@@ -5,7 +5,7 @@
 #include "Instruction.hpp"
 #include "Registers.hpp"
 #include "ULA.hpp"
-#include "RAM.hpp"
+#include "../mainMemory/RAM.hpp"
 
 using namespace std;
 
