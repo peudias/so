@@ -3,16 +3,18 @@
 
 #include <iostream>
 #include <vector>
+#include "../cpu/Instruction.hpp"
 
 using namespace std;
 
 class RAM {
 private:
     vector<int> memoria;
-    int tamanho;
+    vector<Instruction> instruction_memory;
+    static const int tamanho = 32;
 
 public:
-    RAM(int tam) : tamanho(tam), memoria(tam, 0) {}
+    RAM() : memoria(tamanho, 0), instruction_memory(tamanho) {}
 
     void write(int endereco, int valor) {
         if (endereco >= 0 && endereco < tamanho) {
@@ -31,9 +33,31 @@ public:
         }
     }
 
+      void writeInstruction(int endereco, const Instruction& instr) {
+        if (endereco >= 0 && endereco < tamanho) {
+            instruction_memory[endereco] = instr;
+        } else {
+            cout << "Erro: Endereço inválido para instrução na RAM " << endereco << endl;
+        }
+    }
+
+    Instruction fetchInstruction(int endereco) const {
+        if (endereco >= 0 && endereco < tamanho) {
+            return instruction_memory[endereco];
+        }
+        cout << "Erro: Endereço inválido para instrução na RAM " << endereco << endl;
+        return Instruction(ADD, 0, 0, 0); 
+    }
+
     void display() const {
         for (int i = 0; i < tamanho; i++) {
             cout << "Endereço " << i << " -> " << memoria[i] << endl;
+        }
+    }
+
+    void displayI() const {
+        for (int i = 0; i < tamanho; i++) {
+            cout << "Endereço " << i << " -> " << instruction_memory[i] << endl;
         }
     }
 };

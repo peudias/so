@@ -69,7 +69,7 @@ public:
             default:
                 cerr << "Opcode desconhecido: " << instr.op << endl;
         }
-        // PC += 4;
+        // PC += 1;
     }
 };
 
