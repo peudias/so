@@ -1,13 +1,15 @@
-#include "cpu/Opcode.hpp"
-#include "cpu/Instruction.hpp"
-#include "cpu/Registers.hpp"
-#include "cpu/ULA.hpp"
-#include "cpu/UnidadeControle.hpp"
-#include "mainMemory/RAM.hpp"
-#include "pipeline/InstructionFetch.hpp"
-#include "pipeline/InstructionDecode.hpp"
-#include "pipeline/Execute.hpp"
-#include "pipeline/Pipeline.hpp"
+#include "include/cpu/Opcode.hpp"
+#include "include/cpu/Instruction.hpp"
+#include "include/cpu/Registers.hpp"
+#include "include/cpu/ULA.hpp"
+#include "include/cpu/UnidadeControle.hpp"
+
+#include "include/memory/RAM.hpp"
+
+#include "include/pipeline/InstructionFetch.hpp"
+#include "include/pipeline/InstructionDecode.hpp"
+#include "include/pipeline/Execute.hpp"
+#include "include/pipeline/Pipeline.hpp"
 
 #include <vector>
 #include <iostream>
