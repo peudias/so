@@ -3,6 +3,7 @@
 #include "cpu/Registers.hpp"
 #include "cpu/ULA.hpp"
 #include "cpu/UnidadeControle.hpp"
+#include "cpu/Core.hpp"
 #include "mainMemory/RAM.hpp"
 #include "pipeline/InstructionFetch.hpp"
 #include "pipeline/InstructionDecode.hpp"
@@ -14,16 +15,15 @@
 using namespace std;
 
 int main() {
-    Registers regs;
-    UnidadeControle uc;
+    vector<Core> nucleos; 
     RAM ram(128);
     int PC = 0;
 
     int resultado = 0;
 
-    regs.set(2, 10); // R2 = 10
-    regs.set(3, 5);  // R3 = 5
-    regs.set(4, 7);  // R4 = 7
+    //regs.set(2, 10); // R2 = 10
+    //regs.set(3, 5);  // R3 = 5
+    //regs.set(4, 7);  // R4 = 7
 
     // Instruction instr1(ADD, 1, 2, 3);
     // uc.executarInstrucao(instr1, regs, ram, PC);
@@ -48,7 +48,7 @@ int main() {
         Instruction(LOAD, 0, 2, 0)   // R0 -> R2 load R0
     };
 
-    while (PC < memoria.size() * 4){
+    /*while (PC < memoria.size() * 4){
         Instruction instr = InstructionFetch(memoria, PC);
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
 
@@ -58,14 +58,14 @@ int main() {
               << ", Operando 1: " << decodedInstr.value1
               << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        uc.executarInstrucao(instr, regs, ram);
+       // uc.executarInstrucao(instr, regs, ram);
 
         // Executa estágio EX do pipeline e escreve o resultado no registrador
         Execute(decodedInstr, resultado);
         regs.set(decodedInstr.destiny, resultado);
-    }
+    }*/
 
-    regs.display();
+    //regs.display();
 
     cout << "\nEstado atual da RAM:\n";
     ram.display();

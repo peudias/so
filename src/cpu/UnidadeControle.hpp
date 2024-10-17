@@ -66,6 +66,21 @@ public:
                 cout << "DIV R" << instr.Destiny_Register << " = R" << instr.Register_1 << " / R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
                 break;
             }
+            case IF_igual: {
+                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), IF_igual);
+                regs.set(instr.Destiny_Register, resultado);
+                cout << "IF_igual " << instr.Destiny_Register << " = R " << instr.Register_1 << " == R" << instr.Register_2 << " -> "<<regs.get(instr.Destiny_Register) << endl;
+            }
+            case IF_maior: {
+                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), IF_maior);
+                regs.set(instr.Destiny_Register, resultado);
+                cout << "IF_maior " << instr.Destiny_Register << " = R " << instr.Register_1 << " > R" << instr.Register_2 << " -> "<<regs.get(instr.Destiny_Register) << endl;
+            }
+            case ENQ: {
+                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), ENQ);
+                regs.set(instr.Destiny_Register, resultado);
+                cout << "IF_maior " << instr.Destiny_Register << " = R " << instr.Register_1 << " enquanto R" << instr.Register_2 << " -> "<<regs.get(instr.Destiny_Register) << endl;
+            }
             default:
                 cerr << "Opcode desconhecido: " << instr.op << endl;
         }
