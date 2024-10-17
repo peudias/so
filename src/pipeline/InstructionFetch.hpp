@@ -1,4 +1,4 @@
-#ifndef INSTRUCTIONFETCH_HPP
+/*#ifndef INSTRUCTIONFETCH_HPP
 #define INSTRUCTIONFETCH_HPP
 
 #include "../cpu/Instruction.hpp"
@@ -18,4 +18,4 @@ Instruction InstructionFetch(const vector<Instruction>& memoria, int& PC){
     }
 }
 
-#endif
+#endif*/

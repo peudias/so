@@ -6,8 +6,8 @@
 #include "../mainMemory/RAM.hpp"
 #include <iostream>
 
-void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc) {
-    uc.executarInstrucao(decoded, regs, ram); 
+void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC) {
+    uc.executarInstrucao(decoded, regs, ram, PC); 
 }
 
 #endif

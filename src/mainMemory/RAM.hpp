@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "../cpu/Instruction.hpp"
+#include "../pipeline/InstructionDecode.hpp"
 
 using namespace std;
 
@@ -32,8 +33,8 @@ public:
             return -1; 
         }
     }
-
-      void writeInstruction(int endereco, const Instruction& instr) {
+    
+    void writeInstruction(int endereco, const Instruction& instr) {
         if (endereco >= 0 && endereco < tamanho) {
             instruction_memory[endereco] = instr;
         } else {

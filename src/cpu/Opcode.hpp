@@ -10,6 +10,9 @@ enum Opcode {
     OR = 5, 
     MULT = 6,
     DIV = 7,
+    IF_igual = 8,
+    IF_maior = 9,
+    ENQ = 10,
 };
 
 #endif

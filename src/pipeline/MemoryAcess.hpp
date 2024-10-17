@@ -1,8 +1,8 @@
-#ifndef MEMORYACCESS_HPP
+/*#ifndef MEMORYACCESS_HPP
 #define MEMORYACCESS_HPP
 
 #include "InstructionDecode.hpp"
-#include "../cpu/RAM.hpp"
+#include "../mainMemory/RAM.hpp"
 #include <iostream>
 
 void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram) {
@@ -17,4 +17,4 @@ void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram) {
     }
 }
 
-#endif
+#endif*/
