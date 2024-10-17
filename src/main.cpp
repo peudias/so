@@ -19,8 +19,6 @@ int main() {
     RAM ram;
     int PC = 0;
 
-    int resultado = 0;
-
     regs.set(2, 10); // R2 = 10
     regs.set(3, 5);  // R3 = 5
     regs.set(4, 7);  // R4 = 7
@@ -32,11 +30,11 @@ int main() {
     ram.writeInstruction(3, Instruction(LOAD, 0, 2, 0)); 
     
     //esta parte ficaria no execute da pipeline, ele apenas chama o metodo da UC (eu acho)
-    //ram.fetchIntruction le a intrucao que ta na memoria
-    uc.executarInstrucao(ram.fetchInstruction(0), regs, ram);
-    uc.executarInstrucao(ram.fetchInstruction(1), regs, ram);
-    uc.executarInstrucao(ram.fetchInstruction(2), regs, ram); 
-    uc.executarInstrucao(ram.fetchInstruction(3), regs, ram);  
+    // ram.fetchIntruction le a intrucao que ta na memoria
+    // uc.executarInstrucao(ram.fetchInstruction(0), regs, ram);
+    // uc.executarInstrucao(ram.fetchInstruction(1), regs, ram);
+    // uc.executarInstrucao(ram.fetchInstruction(2), regs, ram); 
+    // uc.executarInstrucao(ram.fetchInstruction(3), regs, ram);  
     
     
     vector<Instruction> memoria = {
@@ -50,8 +48,9 @@ int main() {
         Instruction(LOAD, 0, 2, 0)   // R0 -> R2 load R0
     };
 
-    while (PC < memoria.size() * 4){
-        Instruction instr = InstructionFetch(memoria, PC);
+    while (PC < 4 * 4){
+        // Instruction instr = InstructionFetch(memoria, PC);
+        Instruction instr = ram.fetchInstruction(PC / 4);
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
 
         cout << endl << "[ID]: "
@@ -60,11 +59,9 @@ int main() {
               << ", Operando 1: " << decodedInstr.value1
               << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        uc.executarInstrucao(instr, regs, ram);
+        Execute(decodedInstr, regs, ram, uc);   
 
-        // Executa estágio EX do pipeline e escreve o resultado no registrador
-        Execute(decodedInstr, resultado);
-        regs.set(decodedInstr.destiny, resultado);
+        PC += 4;
     }
 
     regs.display();
