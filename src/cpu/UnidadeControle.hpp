@@ -6,6 +6,7 @@
 #include "Registers.hpp"
 #include "ULA.hpp"
 #include "../mainMemory/RAM.hpp"
+#include "../pipeline/InstructionDecode.hpp" 
 
 using namespace std;
 
@@ -15,61 +16,65 @@ private:
 
 public:
 
-    // void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
-    void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram) {
-        switch(instr.op) {
+ // void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram, int& PC) {
+ // void executarInstrucao(const Instruction& instr, Registers& regs, RAM& ram) {
+    void executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram) {
+        switch(decoded.opcode) {
             case ADD: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), ADD);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "ADD R" << instr.Destiny_Register << " = R" << instr.Register_1 << " + R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                int resultado = ula.exec(decoded.value1, decoded.value2, ADD);
+                regs.set(decoded.destiny, resultado);
+                cout << "ADD R" << decoded.destiny << " = " << decoded.value1 << " + " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case SUB: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), SUB);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "SUB R" << instr.Destiny_Register << " = R" << instr.Register_1 << " - R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                int resultado = ula.exec(decoded.value1, decoded.value2, SUB);
+                regs.set(decoded.destiny, resultado);
+                cout << "SUB R" << decoded.destiny << " = " << decoded.value1 << " - " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case AND: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), AND);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "AND R" << instr.Destiny_Register << " = R" << instr.Register_1 << " & R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                int resultado = ula.exec(decoded.value1, decoded.value2, AND);
+                regs.set(decoded.destiny, resultado);
+                cout << "AND R" << decoded.destiny << " = " << decoded.value1 << " & " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case OR: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), OR);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "OR R" << instr.Destiny_Register << " = R" << instr.Register_1 << " | R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                int resultado = ula.exec(decoded.value1, decoded.value2, OR);
+                regs.set(decoded.destiny, resultado);
+                cout << "OR R" << decoded.destiny << " = " << decoded.value1 << " | " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case LOAD: {
-                int valor = ram.read(regs.get(instr.Register_1)); 
-                regs.set(instr.Destiny_Register, valor);
-                cout << "LOAD R" << instr.Destiny_Register << " = RAM[" << regs.get(instr.Register_1) << "] -> " << regs.get(instr.Destiny_Register) << endl;
+                int valor = ram.read(decoded.value1); 
+                regs.set(decoded.destiny, valor);
+                cout << "LOAD R" << decoded.destiny << " = RAM[" << decoded.value1 << "] -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case STORE: {
-                int valor = regs.get(instr.Destiny_Register);
-                ram.write(regs.get(instr.Register_1), valor); 
-                cout << "STORE RAM[" << regs.get(instr.Register_1) << "] = R" << instr.Destiny_Register << " -> " << valor << endl;
+                int valor = regs.get(decoded.destiny);
+                ram.write(decoded.value1, valor); 
+                cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
                 break;
             }
             case MULT: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), MULT);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "MULT R" << instr.Destiny_Register << " = R" << instr.Register_1 << " * R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                int resultado = ula.exec(decoded.value1, decoded.value2, MULT);
+                regs.set(decoded.destiny, resultado);
+                cout << "MULT R" << decoded.destiny << " = " << decoded.value1 << " * " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
                 break;
             }
             case DIV: {
-                int resultado = ula.exec(regs.get(instr.Register_1), regs.get(instr.Register_2), MULT);
-                regs.set(instr.Destiny_Register, resultado);
-                cout << "DIV R" << instr.Destiny_Register << " = R" << instr.Register_1 << " / R" << instr.Register_2 << " -> " << regs.get(instr.Destiny_Register) << endl;
+                if (decoded.value2 != 0) {
+                    int resultado = ula.exec(decoded.value1, decoded.value2, DIV);
+                    regs.set(decoded.destiny, resultado);
+                    cout << "DIV R" << decoded.destiny << " = " << decoded.value1 << " / " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+                } else {
+                    cerr << "Erro: Divisão por zero!" << endl;
+                }
                 break;
             }
             default:
-                cerr << "Opcode desconhecido: " << instr.op << endl;
+                cerr << "Opcode desconhecido: " << decoded.opcode << endl;
         }
-        // PC += 1;
     }
 };
 
