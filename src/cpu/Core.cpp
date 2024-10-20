@@ -5,6 +5,6 @@ Core::Core(RAM& ram) : ram(ram), PC(0) {
 }
 
 void Core::activate() {
-    Pipeline(regs, ram, uc, PC);
+    Pipeline(regs, ram, uc, PC, "data/instructions.txt", "data/setRegisters.txt");
     cout << "PC: " << PC << endl;
 }
