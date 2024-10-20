@@ -1,28 +1,66 @@
 #include "../includes/Pipeline.hpp"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <algorithm>
+#include <cctype>
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC) {
-    regs.set(2, 10); // R2 = 10
-    regs.set(3, 5);  // R3 = 5
-    regs.set(4, 7);  // R4 = 7
+using namespace std;
 
-    // escreve as instruções na memória (endereço, intr)
-    ram.writeInstruction(0, Instruction(ADD, 1, 2, 3)); 
-    ram.writeInstruction(1, Instruction(SUB, 4, 1, 3));
-    ram.writeInstruction(2, Instruction(STORE, 3, 2, 0));
-    ram.writeInstruction(3, Instruction(LOAD, 0, 2, 0)); 
+void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename) {
+    regs.set(2, 10);  // R2 = 10
+    regs.set(3, 5);   // R3 = 5
+    regs.set(4, 7);   // R4 = 7
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Erro ao abrir o arquivo: " << filename << endl;
+        return;
+    }
+
+    string line;
+    int instructionAddress = 0;
+
+    while (getline(file, line)) {
+        string opcodeStr;
+        int reg1, reg2, reg3;
+        char virgula;
+
+        stringstream ss(line);
+
+        getline(ss, opcodeStr, ',');
+
+        opcodeStr.erase(remove_if(opcodeStr.begin(), opcodeStr.end(), ::isspace), opcodeStr.end());
+
+        ss >> reg1 >> virgula >> reg2 >> virgula >> reg3;
+
+        Opcode opcode;
+        if (opcodeStr == "ADD") opcode = ADD;
+        else if (opcodeStr == "SUB") opcode = SUB;
+        else if (opcodeStr == "STORE") opcode = STORE;
+        else if (opcodeStr == "LOAD") opcode = LOAD;
+        else {
+            cerr << "Instrução inválida no arquivo: " << opcodeStr << endl;
+            continue;
+        }
+
+        ram.writeInstruction(instructionAddress++, Instruction(opcode, reg1, reg2, reg3));
+    }
+
+    file.close();
     
-    while (PC < 4 * 4) {
+    while (PC < instructionAddress * 4) {
         Instruction instr = ram.fetchInstruction(PC / 4);
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
 
-        std::cout << std::endl << "[ID]: "
-                  << "Opcode: " << decodedInstr.opcode
-                  << ", Destino: R" << decodedInstr.destiny
-                  << ", Operando 1: " << decodedInstr.value1
-                  << ", Operando 2: " << decodedInstr.value2 << std::endl;
+        cout << endl << "[ID]: "
+             << "Opcode: " << decodedInstr.opcode
+             << ", Destino: R" << decodedInstr.destiny
+             << ", Operando 1: " << decodedInstr.value1
+             << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        Execute(decodedInstr, regs, ram, uc, PC);   
+        Execute(decodedInstr, regs, ram, uc, PC);
 
         PC += 4;
     }

@@ -20,7 +20,7 @@ int main() {
     RAM ram;
     int PC = 0;
 
-    Pipeline(regs, ram, uc, PC);
+    Pipeline(regs, ram, uc, PC, "data/instructions.txt");
 
     regs.display();
 
