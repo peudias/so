@@ -8,10 +8,26 @@
 
 using namespace std;
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename) {
-    regs.set(2, 10);  // R2 = 10
-    regs.set(3, 5);   // R3 = 5
-    regs.set(4, 7);   // R4 = 7
+void setRegistersFromFile(Registers& regs, const string& regsFilename){
+    ifstream regsFile(regsFilename);
+    if(!regsFile.is_open()){
+        cerr << "Erro ao abrir o arquivo de registradores: " << regsFilename << endl;
+        return;
+    }
+
+    string line;
+    while(getline(regsFile, line)){
+        int regNum, regValue;
+        char virgula;
+        stringstream ss(line);
+        ss >> regNum >> virgula >> regValue;
+        regs.set(regNum, regValue);
+    }
+    regsFile.close();
+}
+
+void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename, const string& regsFilename) {
+    setRegistersFromFile(regs, regsFilename);
 
     ifstream file(filename);
     if (!file.is_open()) {
