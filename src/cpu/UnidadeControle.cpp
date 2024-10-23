@@ -16,11 +16,19 @@ void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Regis
             break;
         }
         case LOAD:
-        case STORE:
+        case STORE: {
             MemoryAccess(decoded, resultado, ram);
             if (decoded.opcode == LOAD) {
                 WriteBack(decoded, resultado, regs);
             }
+            break;
+        }
+        case IF_igual: 
+        case IF_maior: 
+        case ENQ:
+            resultado = ula.exec(decoded.value1, decoded.value2, decoded.opcode);
+            std::cout << "[EX]: " << "Operação executada -> Resultado: " << resultado << std::endl;
+            WriteBack(decoded, resultado, regs);
             break;
         default:
             cerr << "Opcode desconhecido: " << decoded.opcode << endl;
