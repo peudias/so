@@ -7,7 +7,8 @@
 #include "ULA.hpp"
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
-
+#include "MemoryAccess.hpp"
+#include "WriteBack.hpp"
 using namespace std;
 
 class UnidadeControle {

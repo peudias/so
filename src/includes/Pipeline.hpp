@@ -7,9 +7,10 @@
 #include "ULA.hpp"
 #include "UnidadeControle.hpp"
 #include "RAM.hpp"
-// #include "InstructionFetch.hpp"
 #include "InstructionDecode.hpp"
 #include "Execute.hpp"
+#include "InstructionFetch.hpp"
+#include "FileReader.hpp"
 
 void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename, const string& regsFilename);
 
