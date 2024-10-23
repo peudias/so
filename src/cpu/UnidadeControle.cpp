@@ -10,18 +10,16 @@ void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Regis
         case OR:
         case MULT:
         case DIV: {
-            // Operações que escrevem de volta no registrador
             resultado = ula.exec(decoded.value1, decoded.value2, decoded.opcode);
             std::cout << "[EX]: " << "Operação executada -> Resultado: " << resultado << std::endl;
-            WriteBack(decoded, resultado, regs);  // Chama WriteBack para registrar o resultado
+            WriteBack(decoded, resultado, regs);
             break;
         }
         case LOAD:
         case STORE:
-            // Operações de memória (Memory Access)
             MemoryAccess(decoded, resultado, ram);
             if (decoded.opcode == LOAD) {
-                WriteBack(decoded, resultado, regs);  // WB é necessário para LOAD
+                WriteBack(decoded, resultado, regs);
             }
             break;
         default:
