@@ -4,6 +4,6 @@
 #include "InstructionDecode.hpp"
 #include "Registers.hpp"
 
-void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs);
+void WB(const DecodedInstruction& decoded, int resultado, Registers& regs);
 
 #endif

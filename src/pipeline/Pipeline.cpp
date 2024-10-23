@@ -1,5 +1,8 @@
 #include "../includes/Pipeline.hpp"
 #include "../includes/FileReader.hpp"
+#include "../includes/InstructionFetch.hpp"
+#include "../includes/MemoryAccess.hpp"
+#include "../includes/WriteBack.hpp"
 #include <iostream>
 
 using namespace std;
@@ -14,7 +17,7 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
     }
 
     while (PC < instructionAddress * 4) {
-        Instruction instr = ram.fetchInstruction(PC / 4);
+        Instruction instr = fetchInstruction(PC/4,ram);
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
 
         cout << endl << "[ID]: "
@@ -23,7 +26,9 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
              << ", Operando 1: " << decodedInstr.value1
              << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        Execute(decodedInstr, regs, ram, uc, PC);
+        int resultado = execute(decodedInstr, regs, ram, uc, PC);
+        EM(PC/4,resultado,ram);
+        WB(decodedInstr,resultado,regs);
 
         PC += 4;
     }

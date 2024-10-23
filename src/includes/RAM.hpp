@@ -7,21 +7,19 @@
 #include "../includes/InstructionDecode.hpp"
 
 class RAM {
-private:
-    std::vector<int> memoria;
-    std::vector<Instruction> instruction_memory;
-    static const int tamanho = 32;
 
 public:
     RAM();
+
+    std::vector<int> memoria;
+    std::vector<Instruction> instruction_memory;
+    static const int tamanho = 32;
 
     void write(int endereco, int valor);
 
     int read(int endereco);
 
     void writeInstruction(int endereco, const Instruction& instr);
-
-    Instruction fetchInstruction(int endereco) const;
 
     void display() const;
 

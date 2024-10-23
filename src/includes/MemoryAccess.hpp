@@ -5,6 +5,6 @@
 #include "RAM.hpp"
 #include <iostream>
 
-void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram);
+void EM(int endereco, int valor, RAM& ram);
 
 #endif

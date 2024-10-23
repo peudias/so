@@ -15,7 +15,7 @@ private:
     ULA ula;
 
 public:
-    void executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC);
+    int executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC);
 };
 
 #endif

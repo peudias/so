@@ -1,14 +1,10 @@
-/*
 #include "../includes/InstructionFetch.hpp"
+#include "../includes/RAM.hpp"
 
-Instruction InstructionFetch(const std::vector<Instruction>& memoria, int& PC) {
-    if (PC < memoria.size() * 4) {
-        Instruction instr = memoria[PC / 4];
-        PC += 4;
-        return instr;
-    } else {
-        std::cerr << "Erro: PC fora dos limites da memória." << std::endl;
-        return Instruction(static_cast<Opcode>(-1), 0, 0, 0);
+Instruction fetchInstruction(int endereco, RAM& ram){
+    if (endereco >= 0 && endereco < ram.tamanho) {
+        return ram.instruction_memory[endereco];
     }
+    std::cout << "Erro: Endereço inválido para instrução na RAM " << endereco << std::endl;
+    return Instruction(ADD, 0, 0, 0);
 }
-*/

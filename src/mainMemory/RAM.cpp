@@ -27,14 +27,6 @@ void RAM::writeInstruction(int endereco, const Instruction& instr) {
     }
 }
 
-Instruction RAM::fetchInstruction(int endereco) const {
-    if (endereco >= 0 && endereco < tamanho) {
-        return instruction_memory[endereco];
-    }
-    std::cout << "Erro: Endereço inválido para instrução na RAM " << endereco << std::endl;
-    return Instruction(ADD, 0, 0, 0);
-}
-
 void RAM::display() const {
     for (int i = 0; i < tamanho; i++) {
         std::cout << "Endereço " << i << " -> " << memoria[i] << std::endl;
