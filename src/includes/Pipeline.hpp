@@ -12,5 +12,6 @@
 #include "Execute.hpp"
 
 void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename, const string& regsFilename);
+void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs);
 
 #endif

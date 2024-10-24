@@ -28,3 +28,9 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
         PC += 4;
     }
 }
+
+void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs) {
+    //if (decoded.opcode == ADD || decoded.opcode == SUB || decoded.opcode == LOAD) {
+    regs.set(decoded.destiny, resultado); // Escreve o resultado no registrador de destino
+    //}
+}
