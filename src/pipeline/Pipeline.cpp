@@ -1,5 +1,6 @@
 #include "../includes/Pipeline.hpp"
 #include "../includes/FileReader.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -26,6 +27,17 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
         Execute(decodedInstr, regs, ram, uc, PC);
 
         PC += 4;
+    }
+}
+
+Instruction InstructionFetch(const std::vector<Instruction>& memoria, int& PC) {
+    if (PC < memoria.size() * 4) {
+        Instruction instr = memoria[PC / 4];
+        PC += 4;
+        return instr;
+    } else {
+        std::cerr << "Erro: PC fora dos limites da memória." << std::endl;
+        return Instruction(static_cast<Opcode>(-1), 0, 0, 0);
     }
 }
 

@@ -4,7 +4,6 @@
 #include "ULA.hpp"
 #include "UnidadeControle.hpp"
 #include "RAM.hpp"
-#include "InstructionFetch.hpp"
 #include "InstructionDecode.hpp"
 #include "Execute.hpp"
 #include "Pipeline.hpp"
