@@ -5,7 +5,6 @@
 #include "UnidadeControle.hpp"
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
-#include "Execute.hpp"
 #include "Pipeline.hpp"
 
 class Core {

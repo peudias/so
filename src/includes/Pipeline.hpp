@@ -8,7 +8,6 @@
 #include "UnidadeControle.hpp"
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
-#include "Execute.hpp"
 #include <string>
 
 
@@ -18,5 +17,6 @@ void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram);
 void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs);
 void setRegistersFromFile(Registers& regs, const std::string& regsFilename);
 int loadInstructionsFromFile(RAM& ram, const std::string& instrFilename);
+void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC);
 
 #endif

@@ -62,6 +62,10 @@ void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs
     //}
 }
 
+void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC) {
+    uc.executarInstrucao(decoded, regs, ram, PC);
+}
+
 void setRegistersFromFile(Registers& regs, const string& regsFilename) {
     ifstream regsFile(regsFilename);
     if (!regsFile.is_open()) {
