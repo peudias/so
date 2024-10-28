@@ -3,8 +3,9 @@
 
 #include "InstructionDecode.hpp"
 #include "RAM.hpp"
+#include "disco.hpp"
 #include <iostream>
 
-void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram);
+void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram, Disco& disco);
 
 #endif

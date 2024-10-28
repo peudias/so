@@ -11,6 +11,6 @@
 #include "InstructionDecode.hpp"
 #include "Execute.hpp"
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename, const string& regsFilename);
+void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& filename, const string& regsFilename, Disco& Disco);
 
 #endif

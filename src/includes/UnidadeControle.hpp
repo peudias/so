@@ -7,6 +7,7 @@
 #include "ULA.hpp"
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
+#include "disco.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ private:
     ULA ula;
 
 public:
-    void executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC);
+    void executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC, Disco& disco);
 };
 
 #endif

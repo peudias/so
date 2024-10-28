@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& instrFilename, const string& regsFilename) {
+void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco) {
     setRegistersFromFile(regs, regsFilename);
 
     int instructionAddress = loadInstructionsFromFile(ram, instrFilename);
@@ -23,7 +23,7 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
              << ", Operando 1: " << decodedInstr.value1
              << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        Execute(decodedInstr, regs, ram, uc, PC);
+        Execute(decodedInstr, regs, ram, uc, PC, disco);
 
         PC += 4;
     }

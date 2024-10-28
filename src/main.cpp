@@ -9,6 +9,7 @@
 #include "includes/Execute.hpp"
 #include "includes/Pipeline.hpp"
 #include "includes/Core.hpp"
+#include "includes/disco.hpp"
 
 #include <vector>
 #include <iostream>
@@ -18,8 +19,13 @@ using namespace std;
 int main() {
 
     RAM ram;
+    Disco disco;
 
     vector<Core> cores;
+
+    //cout << endl << "teste do disco" << endl;
+    //disco.display();
+    //cout << endl;
 
     for (int i = 0; i < 2; i++)
     {   cout << "CORE " << i << ": " << endl;
@@ -32,6 +38,9 @@ int main() {
 
     cout << "\nDados RAM\n";
     ram.display();
+
+    cout << "\nDados DISCO\n";
+    disco.display();
 
     cout << "\nEstado atual da RAM:\n";
     ram.displayI();
