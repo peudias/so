@@ -4,8 +4,6 @@ Disco::Disco() : memoria(LINHAS, std::vector<std::pair<int, bool>>(COLUNAS, {0, 
 
 void Disco::write(int valor) {
     bool inserido = false;
-    //std::cout << "teste";
-    //std::cout << "memoria: " << memoria[0][0].second << std::endl;
 
     for (int j = 0; j < COLUNAS && !inserido; ++j) {
         for (int i = 0; i < LINHAS; ++i) {
@@ -34,3 +32,4 @@ void Disco::display() const {
         std::cout << std::endl;
     }
 }
+

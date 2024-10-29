@@ -1,6 +1,6 @@
 #include "../includes/Core.hpp"
 
-Core::Core(RAM& ram) : ram(ram), PC(0) , disco(disco){
+Core::Core(RAM& ram, Disco& disco) : ram(ram), disco(disco), PC(0) {
     cout << "Core inicializado com RAM\n";
 }
 

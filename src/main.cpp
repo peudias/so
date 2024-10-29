@@ -29,7 +29,7 @@ int main() {
 
     for (int i = 0; i < 2; i++)
     {   cout << "CORE " << i << ": " << endl;
-        cores.emplace_back(ram);
+        cores.emplace_back(ram, disco);
         cout << endl << endl << endl;
     }
 

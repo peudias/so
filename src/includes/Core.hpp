@@ -18,6 +18,6 @@ public:
     RAM& ram;
     Disco& disco;
 
-    Core(RAM& ram);
+    Core(RAM& ram, Disco& disco);
     void activate();
 };

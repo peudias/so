@@ -1,6 +1,7 @@
 #include "../includes/UnidadeControle.hpp"
 
 void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC, Disco& disco) {
+    //disco.display();
     switch (decoded.opcode) {
         case ADD: {
             int resultado = ula.exec(decoded.value1, decoded.value2, ADD);
@@ -40,7 +41,9 @@ void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Regis
             int valor = regs.get(decoded.destiny);
             ram.write(decoded.value1, valor);
             cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
+            //cout << "teste" << endl;
             disco.write(valor);
+            //disco.teste();
             cout << "STORE DISK[" << valor << "]" << endl;
             break;
         }
