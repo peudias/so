@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& instrFilename, const string& regsFilename) {
+void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco) {
     setRegistersFromFile(regs, regsFilename);
 
     int instructionAddress = loadInstructionsFromFile(ram, instrFilename);
@@ -27,9 +27,12 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
              << ", Operando 1: " << decodedInstr.value1
              << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        Execute(decodedInstr, regs, ram, uc, PC);
-
+        Execute(decodedInstr, regs, ram, uc, PC, disco);
+        
         PC += 4;
+
+        cout << "REGS:"<<endl;
+        regs.display();
     }
 }
 
@@ -44,7 +47,7 @@ Instruction InstructionFetch(const std::vector<Instruction>& memoria, int& PC) {
     }
 }
 
-void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram) {
+void Wb(const DecodedInstruction& decoded, int& resultado, RAM& ram, Disco& disco) {
     if (decoded.opcode == LOAD) {
         // Lê da RAM no endereço especificado pelo valor1 e coloca no registrador de destino
         resultado = ram.read(decoded.value1); 
@@ -56,14 +59,14 @@ void MemoryAccess(const DecodedInstruction& decoded, int& resultado, RAM& ram) {
     }
 }
 
-void WriteBack(const DecodedInstruction& decoded, int resultado, Registers& regs) {
+void MemoryAcess(const DecodedInstruction& decoded, int resultado, Registers& regs) {
     //if (decoded.opcode == ADD || decoded.opcode == SUB || decoded.opcode == LOAD) {
     regs.set(decoded.destiny, resultado); // Escreve o resultado no registrador de destino
     //}
 }
 
-void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC) {
-    uc.executarInstrucao(decoded, regs, ram, PC);
+void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, Disco& disco) {
+    uc.executarInstrucao(decoded, regs, ram, PC, disco);
 }
 
 void setRegistersFromFile(Registers& regs, const string& regsFilename) {
@@ -111,8 +114,12 @@ int loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
         Opcode opcode;
         if (opcodeStr == "ADD") opcode = ADD;
         else if (opcodeStr == "SUB") opcode = SUB;
+        else if (opcodeStr == "AND") opcode = AND;
+        else if (opcodeStr == "OR") opcode = OR;
         else if (opcodeStr == "STORE") opcode = STORE;
         else if (opcodeStr == "LOAD") opcode = LOAD;
+        else if (opcodeStr == "ENQ") opcode = ENQ;
+        else if (opcodeStr == "IF_igual") opcode = IF_igual;
         else {
             cerr << "Instrução inválida no arquivo: " << opcodeStr << endl;
             continue;

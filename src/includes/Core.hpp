@@ -6,6 +6,7 @@
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
 #include "Pipeline.hpp"
+#include "disco.hpp"
 
 class Core {
 public:
@@ -13,7 +14,8 @@ public:
     UnidadeControle uc;
     int PC;
     RAM& ram;
+    Disco& disco;
 
-    Core(RAM& ram);
+    Core(RAM& ram, Disco& disco);
     void activate();
 };

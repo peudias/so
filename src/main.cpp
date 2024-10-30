@@ -16,12 +16,12 @@ using namespace std;
 int main() {
 
     RAM ram;
-
+    Disco disco;
     vector<Core> cores;
 
     for (int i = 0; i < 2; i++)
     {   cout << "CORE " << i << ": " << endl;
-        cores.emplace_back(ram);
+        cores.emplace_back(ram, disco);
         cout << endl << endl << endl;
     }
 
@@ -31,8 +31,12 @@ int main() {
     cout << "\nDados RAM\n";
     ram.display();
 
+    cout << "\nDados DISCO\n";
+    disco.display();
+
     cout << "\nEstado atual da RAM:\n";
     ram.displayI();
+    
 
     return 0;
 }

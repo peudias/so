@@ -1,6 +1,6 @@
 #include "../includes/UnidadeControle.hpp"
 
-void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC) {
+void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC, Disco& disco) {
     switch (decoded.opcode) {
         case ADD: {
             int resultado = ula.exec(decoded.value1, decoded.value2, ADD);
@@ -40,6 +40,8 @@ void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Regis
             int valor = regs.get(decoded.destiny);
             ram.write(decoded.value1, valor);
             cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
+            disco.write(valor);
+            cout << "STORE DISK[" << valor << "]" << endl;
             break;
         }
         case MULT: {
@@ -61,21 +63,24 @@ void UnidadeControle::executarInstrucao(const DecodedInstruction& decoded, Regis
             break;
         }
         case IF_igual: {
-            int resultado = ula.exec(regs.get(decoded.value1), regs.get(decoded.value2), IF_igual);
+            int resultado = ula.exec(decoded.value1, decoded.value2, IF_igual);
             regs.set(decoded.destiny, resultado);
+            ram.write(PC / 4, resultado);
             cout << "IF_igual " << decoded.destiny << " = R" << decoded.value1 << " == R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
             break;
         }
         case IF_maior: {
-            int resultado = ula.exec(regs.get(decoded.value1), regs.get(decoded.value2), IF_maior);
+            int resultado = ula.exec(decoded.value1, decoded.value2, IF_maior);
             regs.set(decoded.destiny, resultado);
+            ram.write(PC / 4, resultado);
             cout << "IF_maior " << decoded.destiny << " = R" << decoded.value1 << " > R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
             break;
         }
         case ENQ: {
-            int resultado = ula.exec(regs.get(decoded.value1), regs.get(decoded.value2), ENQ);
+            int resultado = ula.exec(decoded.value1, decoded.value2, ENQ);
             regs.set(decoded.destiny, resultado);
-            cout << "IF_maior " << decoded.destiny << " = R" << decoded.value1 << " enquanto R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            ram.write(PC / 4, resultado);
+            cout << "ENQ " << decoded.destiny << " = R" << decoded.value1 << " enquanto R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
             break;
         }
         default:
