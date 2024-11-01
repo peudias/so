@@ -17,7 +17,6 @@ void Registers::set(int index, int value) {
         cerr << "Erro: Registrador inválido " << index << endl;
     }
 }
-
 void Registers::display() const {
     cout << endl << "Registradores: " << endl;
     for (size_t i = 0; i < registradores.size(); ++i) {

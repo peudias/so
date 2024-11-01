@@ -15,7 +15,7 @@ public:
     Registers(); 
 
     int get(int index) const;
-
+    
     void set(int index, int value);
 
     void display() const;

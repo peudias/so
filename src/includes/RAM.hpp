@@ -8,11 +8,12 @@
 
 class RAM {
 private:
-    std::vector<int> memoria;
-    std::vector<Instruction> instruction_memory;
-    static const int tamanho = 32;
 
 public:
+    vector<int> memoria;
+    vector<Instruction> instruction_memory;
+    static const int tamanho = 32;
+
     RAM();
 
     void write(int endereco, int valor);

@@ -8,15 +8,16 @@
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
 #include "Disco.hpp"
+#include "Pipeline.hpp"
 
 using namespace std;
 
 class UnidadeControle {
 private:
-    ULA ula;
+    Pipeline pipeline;
 
 public:
-    void executarInstrucao(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC, Disco& disco);
+    void executarInstrucao(Registers& regs, RAM& ram, int& PC, Disco& disco, int& Clock);
 };
 
 #endif

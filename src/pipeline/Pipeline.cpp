@@ -8,18 +8,25 @@
 
 using namespace std;
 
-void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco) {
+Pipeline::Pipeline(){}
+
+void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco, int& Clock) {
+    
     setRegistersFromFile(regs, regsFilename);
 
     int instructionAddress = loadInstructionsFromFile(ram, instrFilename);
+
     if (instructionAddress == -1) {
         cerr << "Erro ao carregar as instruções." << endl;
         return;
     }
 
     while (PC < instructionAddress * 4) {
-        Instruction instr = ram.fetchInstruction(PC / 4);
+        Instruction instr = InstructionFetch(ram,PC / 4);
+        Clock++;
+
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
+        Clock++;
 
         cout << endl << "[ID]: "
              << "Opcode: " << decodedInstr.opcode
@@ -27,49 +34,149 @@ void Pipeline(Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, const str
              << ", Operando 1: " << decodedInstr.value1
              << ", Operando 2: " << decodedInstr.value2 << endl;
 
-        Execute(decodedInstr, regs, ram, uc, PC, disco);
+        Execute(decodedInstr, regs, ram, PC, disco, Clock);
         
         PC += 4;
 
         cout << "REGS:"<<endl;
-        regs.display();
+        regs.display(); 
+
+        cout << "Clock: " << Clock << endl;
     }
 }
 
-Instruction InstructionFetch(const std::vector<Instruction>& memoria, int& PC) {
-    if (PC < memoria.size() * 4) {
-        Instruction instr = memoria[PC / 4];
-        PC += 4;
-        return instr;
-    } else {
-        std::cerr << "Erro: PC fora dos limites da memória." << std::endl;
-        return Instruction(static_cast<Opcode>(-1), 0, 0, 0);
+Instruction Pipeline::InstructionFetch(RAM& ram, int endereco) {
+    if (endereco >= 0 && endereco < ram.tamanho) {
+        return ram.instruction_memory[endereco];
     }
+    cout << "Erro: Endereço inválido para instrução na RAM " << endereco << endl;
+    return Instruction(ADD, 0, 0, 0);
 }
 
-void Wb(const DecodedInstruction& decoded, int& resultado, RAM& ram, Disco& disco) {
-    if (decoded.opcode == LOAD) {
-        // Lê da RAM no endereço especificado pelo valor1 e coloca no registrador de destino
-        resultado = ram.read(decoded.value1); 
-        std::cout << "[MEM]: LOAD da RAM[" << decoded.value1 << "] -> Resultado: " << resultado << std::endl;
-    } else if (decoded.opcode == STORE) {
-        // Escreve na RAM no endereço value1 o valor de value2
-        ram.write(decoded.value1, decoded.value2); 
-        std::cout << "[MEM]: STORE na RAM[" << decoded.value1 << "] = " << decoded.value2 << std::endl;
-    }
+void Pipeline::Wb(const DecodedInstruction& decoded, int& resultado, RAM& ram, Disco& disco, int& Clock) {
+    ram.write(decoded.value1, resultado); 
+    Clock++;
 }
 
-void MemoryAcess(const DecodedInstruction& decoded, int resultado, Registers& regs) {
-    //if (decoded.opcode == ADD || decoded.opcode == SUB || decoded.opcode == LOAD) {
+void Pipeline::MemoryAccess(const DecodedInstruction& decoded, int resultado, Registers& regs, int& Clock) {
     regs.set(decoded.destiny, resultado); // Escreve o resultado no registrador de destino
-    //}
+    Clock++;
 }
 
-void Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, UnidadeControle& uc, int& PC, Disco& disco) {
-    uc.executarInstrucao(decoded, regs, ram, PC, disco);
+void Pipeline::Execute(const DecodedInstruction& decoded, Registers& regs, RAM& ram, int& PC, Disco& disco, int& Clock) {
+    switch (decoded.opcode) {
+        case ADD: {
+            int resultado = ula.exec(decoded.value1, decoded.value2, ADD);
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "ADD R" << decoded.destiny << " = " << decoded.value1 << " + " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case SUB: {
+            int resultado = ula.exec(decoded.value1, decoded.value2, SUB);
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "SUB R" << decoded.destiny << " = " << decoded.value1 << " - " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case AND: {
+            int resultado = ula.exec(decoded.value1, decoded.value2, AND);
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "AND R" << decoded.destiny << " = " << decoded.value1 << " & " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case OR: {
+            int resultado = ula.exec(decoded.value1, decoded.value2, OR);
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "OR R" << decoded.destiny << " = " << decoded.value1 << " | " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case LOAD: {
+            int valor = ram.read(decoded.value1);
+            Clock++;
+            MemoryAccess(decoded, valor, regs, Clock);
+            //regs.set(decoded.destiny, valor);
+            cout << "LOAD R" << decoded.destiny << " = RAM[" << decoded.value1 << "] -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case STORE: {
+            int valor = regs.get(decoded.destiny);
+            Clock++;
+            Wb(decoded,valor,ram,disco, Clock);
+            cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
+            disco.write(valor);
+            cout << "STORE DISK[" << valor << "]" << endl;
+            break;
+        }
+        case MULT: {
+            int resultado = ula.exec(decoded.value1, decoded.value2, MULT);
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "MULT R" << decoded.destiny << " = " << decoded.value1 << " * " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case DIV: {
+            if (decoded.value2 != 0) {
+                int resultado = ula.exec(decoded.value1, decoded.value2, DIV);
+                Clock++;
+                MemoryAccess(decoded, resultado, regs, Clock);
+                
+                cout << "DIV R" << decoded.destiny << " = " << decoded.value1 << " / " << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            } else {
+                cerr << "Erro: Divisão por zero!" << endl;
+            }
+            break;
+        }
+        case IF_igual: {
+            int resultado;
+            if (decoded.value1 == decoded.value2){
+                resultado = 1;
+            }else
+                resultado = 0;
+            Clock++;
+            MemoryAccess(decoded, resultado, regs, Clock);
+            
+            cout << "IF_igual " << decoded.destiny << " = R" << decoded.value1 << " == R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        case ENQ: {
+            int resultado = decoded.value1;
+            cout << "OPERADOR 1: " << decoded.value1 << endl;
+            cout << "OPERADOR 2: " << decoded.value2 << endl;
+            
+            while (resultado != decoded.value2) 
+            {
+                if(resultado < decoded.value2)
+                {
+                    resultado = ula.exec(resultado, 1, ADD);
+                    Clock++;
+                    MemoryAccess(decoded, resultado, regs, Clock);
+                    
+                }    
+                else
+                {
+                    resultado = ula.exec(resultado, 1, SUB);
+                    Clock++;
+                    MemoryAccess(decoded, resultado, regs, Clock);
+                    
+                }
+            }
+            cout << "ENQ " << decoded.destiny << " = R" << decoded.value1 << " enquanto R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
+            break;
+        }
+        default:
+            cerr << "Opcode desconhecido: " << decoded.opcode << endl;
+    }
 }
 
-void setRegistersFromFile(Registers& regs, const string& regsFilename) {
+void Pipeline::setRegistersFromFile(Registers& regs, const string& regsFilename) {
     ifstream regsFile(regsFilename);
     if (!regsFile.is_open()) {
         cerr << "Erro ao abrir o arquivo de registradores: " << regsFilename << endl;
@@ -88,7 +195,7 @@ void setRegistersFromFile(Registers& regs, const string& regsFilename) {
     regsFile.close();
 }
 
-int loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
+int Pipeline::loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
     ifstream file(instrFilename);
     if (!file.is_open()) {
         cerr << "Erro ao abrir o arquivo de instruções: " << instrFilename << endl;
@@ -132,3 +239,5 @@ int loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
 
     return instructionAddress;
 }
+
+/**/
