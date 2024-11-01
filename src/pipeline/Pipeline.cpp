@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Pipeline::Pipeline(){}
+Pipeline::Pipeline() {}
 
 void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco, int& Clock) {
     
@@ -22,7 +22,7 @@ void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& PC, const string&
     }
 
     while (PC < instructionAddress * 4) {
-        Instruction instr = InstructionFetch(ram,PC / 4);
+        Instruction instr = InstructionFetch(ram, PC / 4);
         Clock++;
 
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
@@ -38,7 +38,7 @@ void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& PC, const string&
         
         PC += 4;
 
-        cout << "REGS:"<<endl;
+        cout << "REGS:" << endl;
         regs.display(); 
 
         cout << "Clock: " << Clock << endl;
@@ -59,7 +59,7 @@ void Pipeline::Wb(const DecodedInstruction& decoded, int& resultado, RAM& ram, D
 }
 
 void Pipeline::MemoryAccess(const DecodedInstruction& decoded, int resultado, Registers& regs, int& Clock) {
-    regs.set(decoded.destiny, resultado); // Escreve o resultado no registrador de destino
+    regs.set(decoded.destiny, resultado);
     Clock++;
 }
 
@@ -101,14 +101,13 @@ void Pipeline::Execute(const DecodedInstruction& decoded, Registers& regs, RAM& 
             int valor = ram.read(decoded.value1);
             Clock++;
             MemoryAccess(decoded, valor, regs, Clock);
-            //regs.set(decoded.destiny, valor);
             cout << "LOAD R" << decoded.destiny << " = RAM[" << decoded.value1 << "] -> " << regs.get(decoded.destiny) << endl;
             break;
         }
         case STORE: {
             int valor = regs.get(decoded.destiny);
             Clock++;
-            Wb(decoded,valor,ram,disco, Clock);
+            Wb(decoded, valor, ram, disco, Clock);
             cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
             disco.write(valor);
             cout << "STORE DISK[" << valor << "]" << endl;
@@ -135,11 +134,7 @@ void Pipeline::Execute(const DecodedInstruction& decoded, Registers& regs, RAM& 
             break;
         }
         case IF_igual: {
-            int resultado;
-            if (decoded.value1 == decoded.value2){
-                resultado = 1;
-            }else
-                resultado = 0;
+            int resultado = (decoded.value1 == decoded.value2) ? 1 : 0;
             Clock++;
             MemoryAccess(decoded, resultado, regs, Clock);
             
@@ -151,21 +146,15 @@ void Pipeline::Execute(const DecodedInstruction& decoded, Registers& regs, RAM& 
             cout << "OPERADOR 1: " << decoded.value1 << endl;
             cout << "OPERADOR 2: " << decoded.value2 << endl;
             
-            while (resultado != decoded.value2) 
-            {
-                if(resultado < decoded.value2)
-                {
+            while (resultado != decoded.value2) {
+                if (resultado < decoded.value2) {
                     resultado = ula.exec(resultado, 1, ADD);
                     Clock++;
                     MemoryAccess(decoded, resultado, regs, Clock);
-                    
-                }    
-                else
-                {
+                } else {
                     resultado = ula.exec(resultado, 1, SUB);
                     Clock++;
                     MemoryAccess(decoded, resultado, regs, Clock);
-                    
                 }
             }
             cout << "ENQ " << decoded.destiny << " = R" << decoded.value1 << " enquanto R" << decoded.value2 << " -> " << regs.get(decoded.destiny) << endl;
@@ -190,7 +179,7 @@ void Pipeline::setRegistersFromFile(Registers& regs, const string& regsFilename)
         stringstream ss(line);
 
         ss >> regNum >> virgula >> regValue;
-        regs.set(regNum, regValue);
+        regs.set(regNum, regValue); 
     }
     regsFile.close();
 }
@@ -228,16 +217,20 @@ int Pipeline::loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
         else if (opcodeStr == "ENQ") opcode = ENQ;
         else if (opcodeStr == "IF_igual") opcode = IF_igual;
         else {
-            cerr << "Instrução inválida no arquivo: " << opcodeStr << endl;
+            cerr << "Erro: Instrução inválida no arquivo: " << opcodeStr << endl;
             continue;
         }
 
-        ram.writeInstruction(instructionAddress++, Instruction(opcode, reg1, reg2, reg3));
-    }
+        Instruction instr(opcode, reg1, reg2, reg3);
 
+        if (instructionAddress < ram.tamanho) {
+            ram.instruction_memory[instructionAddress++] = instr;
+        } else {
+            cerr << "Erro: memória RAM cheia, não é possível carregar mais instruções." << endl;
+            break;
+        }
+    }
     file.close();
 
     return instructionAddress;
 }
-
-/**/
