@@ -7,6 +7,7 @@
 #include "includes/InstructionDecode.hpp"
 #include "includes/Pipeline.hpp"
 #include "includes/Core.hpp"
+#include "includes/perifericos.hpp"
 
 #include <vector>
 #include <iostream>
@@ -18,6 +19,10 @@ int main() {
     RAM ram;
     Disco disco;
     vector<Core> cores;
+    Perifericos periferico;
+
+    periferico.estadoPeriferico("teclado", true);
+    periferico.estadoPeriferico("mouse", true);
 
     for (int i = 0; i < 2; i++)
     {   cout << "CORE " << i << ": " << endl;
