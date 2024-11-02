@@ -10,7 +10,7 @@
 
 Para o correto funcionamento do programa, é necessário incluir as instruções inicais em dois arquivos. Um arquivo nomeado de [`Instructions.txt`](https://github.com/peudias/so/blob/main/data/instructions.txt) e outro nomeado de [`setRegisters.txt`](https://github.com/peudias/so/blob/main/data/setRegisters.txt). Ambos dentro da pasta [`data`](https://github.com/peudias/so/tree/main/data), devendo seguir o seguinte formato:
 
-### Instructions.txt
+### [Instructions.txt](https://github.com/peudias/so/blob/main/data/instructions.txt)
 
 Este arquivo contém as instruções a serem simuladas, com cada linha no seguinte formato: `OPERAÇÃO`, `REGISTRADOR_DESTINO`, `REGISTRADOR_1`, `REGISTRADOR_2`. O registrador de destino armazena o resultado da operação realizada com os valores dos dois registradores especificados. Exemplo:
 
@@ -23,7 +23,7 @@ ENQ, 7, 3, 4
 IF_igual, 8, 4, 7
 ```
 
-### setRegisters.txts
+### [setRegisters.txts](https://github.com/peudias/so/blob/main/data/setRegisters.txt)
 
 Especifica os valores iniciais dos registradores no formato: `REGISTRADOR`, `VALOR`. Exemplo:
 
