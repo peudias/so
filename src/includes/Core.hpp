@@ -6,7 +6,7 @@
 #include "RAM.hpp"
 #include "InstructionDecode.hpp"
 #include "Pipeline.hpp"
-#include "disco.hpp"
+#include "Disco.hpp"
 #include "Pipeline.hpp"
 
 class Core {

@@ -1,4 +1,4 @@
-#include "../includes/disco.hpp"
+#include "../includes/Disco.hpp"
 
 Disco::Disco() : memoria(LINHAS, std::vector<std::pair<int, bool>>(COLUNAS, {0, false})) {}
 
