@@ -55,4 +55,3 @@ Esse pequeno exemplo possui um arquivo [`makefile`](https://github.com/peudias/s
 | José Marconi     | <a href="https://github.com/josemarconi"><img align="center" height="20px" width="90px" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> |
 | Lucas Fernandes  | <a href="https://github.com/LucasMagras"><img align="center" height="20px" width="90px" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> |
 | Pedro Dias       | <a href="https://github.com/peudias"><img align="center" height="20px" width="90px" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>     |
-|                  |
