@@ -1,3 +1,6 @@
+#ifndef CORE_HPP
+#define CORE_HPP
+
 #include "Opcode.hpp"
 #include "Instruction.hpp"
 #include "Registers.hpp"
@@ -8,25 +11,41 @@
 #include "Pipeline.hpp"
 #include "Disco.hpp"
 #include "Pipeline.hpp"
+#include <thread>
+#include <mutex>
+
+struct ThreadContext {
+    int start_address;   
+    int end_address;     
+    int current_pc;      
+    int thread_id;
+    int quantum;         // Quantum da thread
+    int current_address; // Próxima instrução a ser executada
+    int execution_time;  // Tempo total de execução da thread
+
+    ThreadContext(int start, int end, int thread_id, int quantum) 
+        : start_address(start), 
+          end_address(end), 
+          current_pc(0), 
+          thread_id(thread_id),
+          quantum(quantum), 
+          current_address(start),
+          execution_time(0) {}
+};
+
 
 class Core {
+private:
+    bool busy;
 public:
     Registers regs;
     UnidadeControle uc;
-    int PC;
     RAM& ram;
     Disco& disco;
     int Clock;
 
     Core(RAM& ram, Disco& disco);
-    void activate();
+    bool activate_with_context(ThreadContext& context, RAM& ram, mutex& output_mutex);
+    bool is_busy() const;
 };
-
-/*
-tem que ter uma classe propria pra pipiline com os 5 estagios la dentro, herdando e usando.
-classe de registradores para controlar os regs e pc
-classe ula tem que fazer a parte do exec da pipeline
-classe unidade de controle ela herda a pipeline e a ULA pra gerenciar
-A core tem as classes
-a uc tem que verificar o que esta fazendo
-*/
+#endif

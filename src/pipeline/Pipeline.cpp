@@ -8,41 +8,56 @@
 
 using namespace std;
 
-Pipeline::Pipeline() {}
+Pipeline::Pipeline() {} // Construtor da classe Pipeline
 
-void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& PC, const string& instrFilename, const string& regsFilename, Disco& disco, int& Clock) {
-    
+// Método que processa o pipeline
+void Pipeline::PipelineProcess(Registers& regs, RAM& ram, int& relative_PC, int end_address, const string& regsFilename, Disco& disco, 
+    int& Clock, int& instructions_executed, int& quantum_remaing) {
+    //cout << "Iniciando o processamento do pipeline para Thread com limite: " << end_address << endl;
+
+    // Inicializa os registradores a partir do arquivo
     setRegistersFromFile(regs, regsFilename);
 
-    int instructionAddress = loadInstructionsFromFile(ram, instrFilename);
-
-    if (instructionAddress == -1) {
-        cerr << "Erro ao carregar as instruções." << endl;
+    // Valida o endereço da instrução
+    if (end_address <= 0) {
+        cerr << "Erro: Endereço de instrução inválido." << endl;
         return;
     }
 
-    while (PC < instructionAddress * 4) {
-        Instruction instr = InstructionFetch(ram, PC / 4);
-        Clock++;
+    try {
+        // Calcula o endereço de memória real
+        int mem_address = relative_PC; // Usa relative_PC diretamente como índice da instrução
 
+        // Busca a instrução
+        Instruction instr = InstructionFetch(ram, mem_address);
+        cout << "Buscando instrução na posição " << mem_address << endl;
+        Clock++; // Incrementa o clock
+
+        // Decodifica a instrução
         DecodedInstruction decodedInstr = InstructionDecode(instr, regs);
-        Clock++;
+        Clock++; // Incrementa o clock
 
-        cout << endl << "[ID]: "
+        /*cout << "[ID]: "
              << "Opcode: " << decodedInstr.opcode
              << ", Destino: R" << decodedInstr.destiny
              << ", Operando 1: " << decodedInstr.value1
-             << ", Operando 2: " << decodedInstr.value2 << endl;
+             << ", Operando 2: " << decodedInstr.value2 << endl;*/
 
-        Execute(decodedInstr, regs, ram, PC, disco, Clock);
+        // Executa a instrução
+        Execute(decodedInstr, regs, ram, relative_PC, disco, Clock);
         
-        PC += 4;
+        // Move para a próxima instrução
+        ++relative_PC; // Incrementa em 1, pois estamos usando o índice da instrução
+        --quantum_remaing; // Decrementa o quantum restante
+        ++instructions_executed;
 
-        cout << "REGS:" << endl;
-        regs.display(); 
+        cout << "Clock: " << Clock << " | Quantum restante: " << quantum_remaing 
+             << " | Instruções executadas: " << instructions_executed << endl;
 
-        cout << "Clock: " << Clock << endl;
+    } catch (const std::exception& e) {
+        cerr << "Erro durante a execução da instrução: " << e.what() << endl; 
     }
+
 }
 
 Instruction Pipeline::InstructionFetch(RAM& ram, int endereco) {
@@ -110,7 +125,7 @@ void Pipeline::Execute(const DecodedInstruction& decoded, Registers& regs, RAM& 
             Wb(decoded, valor, ram, disco, Clock);
             cout << "STORE RAM[" << decoded.value1 << "] = R" << decoded.destiny << " -> " << valor << endl;
             disco.write(valor);
-            cout << "STORE DISK[" << valor << "]" << endl;
+            //cout << "STORE DISK[" << valor << "]" << endl;
             break;
         }
         case MULT: {
@@ -182,55 +197,4 @@ void Pipeline::setRegistersFromFile(Registers& regs, const string& regsFilename)
         regs.set(regNum, regValue); 
     }
     regsFile.close();
-}
-
-int Pipeline::loadInstructionsFromFile(RAM& ram, const string& instrFilename) {
-    ifstream file(instrFilename);
-    if (!file.is_open()) {
-        cerr << "Erro ao abrir o arquivo de instruções: " << instrFilename << endl;
-        return -1;
-    }
-
-    string line;
-    int instructionAddress = 0;
-
-    while (getline(file, line)) {
-        string opcodeStr;
-        int reg1, reg2, reg3;
-        char virgula;
-
-        stringstream ss(line);
-
-        getline(ss, opcodeStr, ',');
-
-        opcodeStr.erase(remove_if(opcodeStr.begin(), opcodeStr.end(), ::isspace), opcodeStr.end());
-
-        ss >> reg1 >> virgula >> reg2 >> virgula >> reg3;
-
-        Opcode opcode;
-        if (opcodeStr == "ADD") opcode = ADD;
-        else if (opcodeStr == "SUB") opcode = SUB;
-        else if (opcodeStr == "AND") opcode = AND;
-        else if (opcodeStr == "OR") opcode = OR;
-        else if (opcodeStr == "STORE") opcode = STORE;
-        else if (opcodeStr == "LOAD") opcode = LOAD;
-        else if (opcodeStr == "ENQ") opcode = ENQ;
-        else if (opcodeStr == "IF_igual") opcode = IF_igual;
-        else {
-            cerr << "Erro: Instrução inválida no arquivo: " << opcodeStr << endl;
-            continue;
-        }
-
-        Instruction instr(opcode, reg1, reg2, reg3);
-
-        if (instructionAddress < ram.tamanho) {
-            ram.instruction_memory[instructionAddress++] = instr;
-        } else {
-            cerr << "Erro: memória RAM cheia, não é possível carregar mais instruções." << endl;
-            break;
-        }
-    }
-    file.close();
-
-    return instructionAddress;
 }
